@@ -15,21 +15,21 @@ $(function () {
     }
   });
 
-  $.get('http://192.168.1.7:5001/api/v1/status/', function (data, statusText, xhr) {
+  $.get('http://0.0.0.0:5001/api/v1/status/', function (data, statusText, xhr) {
     if (xhr.status === 200) {
       $('div#api_status').toggleClass('available default');
     }
   });
 
   $.ajax({
-    url: 'http://192.168.1.7:5001/api/v1/places_search/',
+    url: 'http://0.0.0.0:5001/api/v1/places_search/',
     type: 'POST',
     dataType: 'json',
     contentType: 'application/json',
     data: JSON.stringify({}),
     success: function (data, textStatus, jQxhr) {
       for (const value of data) {
-        $.get('http://192.168.1.7:5001/api/v1/users/' + value.user_id, function (user) {
+        $.get('http://0.0.0.0:5001/api/v1/users/' + value.user_id, function (user) {
           $('section.places').append('<article> <div class="title_box"> <h2>' + value.name + '</h2>' +
                                     '<div class="price_by_night">' + value.price_by_night + '</div> </div>' +
                                     '<div class="information"> <div class="max_guest">' + value.max_guest + ' Guests </div>' +
@@ -44,11 +44,12 @@ $(function () {
 
   $('button').click(function () {
     $.ajax({
-      url: 'http://192.168.1.7:5001/api/v1/places_search/',
+      url: 'http://0.0.0.0:5001/api/v1/places_search/',
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify(listChecked)
+      data: JSON.stringify(listChecked),
+      success: function (data) {}
     });
   });
 });
