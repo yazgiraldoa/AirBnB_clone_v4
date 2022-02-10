@@ -15,11 +15,9 @@ $(function () {
     }
   });
 
-  $.ajax({
-    url: 'http://0.0.0.0:5001/api/v1/status/',
-    type: 'get'
-  }).done(function (data, statusText, xhr) {
-    const status = xhr.status;
-    console.log(status);
+  $.get('http://0.0.0.0:5001/api/v1/status/', function (data, statusText, xhr) {
+    if (xhr.status === 200) {
+      $('div#api_status').toggleClass('available default');
+    }
   });
 });
