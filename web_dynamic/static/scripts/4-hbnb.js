@@ -1,5 +1,7 @@
 $(function () {
   const listChecked = {};
+  const amenityIds = {};
+  reloadPlaces();
 
   $('.amenities ul li input').on('change', function () {
     if ($(this).is(':checked')) {
@@ -21,35 +23,32 @@ $(function () {
     }
   });
 
-  $.ajax({
-    url: 'http://0.0.0.0:5001/api/v1/places_search/',
-    type: 'POST',
-    dataType: 'json',
-    contentType: 'application/json',
-    data: JSON.stringify({}),
-    success: function (data, textStatus, jQxhr) {
-      for (const value of data) {
-        $.get('http://0.0.0.0:5001/api/v1/users/' + value.user_id, function (user) {
-          $('section.places').append('<article> <div class="title_box"> <h2>' + value.name + '</h2>' +
-                                    '<div class="price_by_night">' + value.price_by_night + '</div> </div>' +
-                                    '<div class="information"> <div class="max_guest">' + value.max_guest + ' Guests </div>' +
-                                    '<div class="number_rooms">' + value.number_rooms + ' Bedrooms </div>' +
-                                    '<div class="number_bathrooms">' + value.number_bathrooms + ' Bathrooms </div> </div>' +
-                                    '<div class="user"> <b>Owner:</b> ' + user.first_name + ' ' + user.last_name +
-                                    '</div> <div class="description">' + value.description + '</div> </article>');
-        });
-      }
-    }
+  $('button#btn').click(function () {
+    amenityIds.amenities = Object.keys(listChecked);
+    $('section.places').empty();
+    reloadPlaces();
   });
 
-  $('button').click(function () {
+  function reloadPlaces () {
     $.ajax({
       url: 'http://0.0.0.0:5001/api/v1/places_search/',
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify(listChecked),
-      success: function (data) {}
+      data: JSON.stringify(amenityIds),
+      success: function (data, textStatus, jQxhr) {
+        for (const value of data) {
+          $.get('http://0.0.0.0:5001/api/v1/users/' + value.user_id, function (user) {
+            $('section.places').append('<article> <div class="title_box"> <h2>' + value.name + '</h2>' +
+                                      '<div class="price_by_night">' + value.price_by_night + '</div> </div>' +
+                                      '<div class="information"> <div class="max_guest">' + value.max_guest + ' Guests </div>' +
+                                      '<div class="number_rooms">' + value.number_rooms + ' Bedrooms </div>' +
+                                      '<div class="number_bathrooms">' + value.number_bathrooms + ' Bathrooms </div> </div>' +
+                                      '<div class="user"> <b>Owner:</b> ' + user.first_name + ' ' + user.last_name +
+                                      '</div> <div class="description">' + value.description + '</div> </article>');
+          });
+        }
+      }
     });
-  });
+  }
 });
